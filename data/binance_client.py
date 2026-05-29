@@ -118,6 +118,26 @@ class BinanceClient:
             ask=float(data["askPrice"]),
         )
 
+    async def get_all_usdt_pairs(self, min_volume_usd: float = 500_000) -> list[str]:
+        """Return all actively trading USDT pairs with 24h volume above threshold."""
+        # Use bulk ticker endpoint (weight=40) instead of per-symbol calls
+        tickers = await self._get("/api/v3/ticker/24hr", {})
+        pairs = []
+        for t in tickers:
+            sym = t.get("symbol", "")
+            if not sym.endswith("USDT"):
+                continue
+            try:
+                vol = float(t.get("quoteVolume", 0))
+                status_ok = float(t.get("lastPrice", 0)) > 0
+            except (ValueError, TypeError):
+                continue
+            if status_ok and vol >= min_volume_usd:
+                pairs.append(sym)
+        pairs.sort()
+        logger.info("Discovered %d USDT pairs with vol >= $%.0f", len(pairs), min_volume_usd)
+        return pairs
+
     async def get_order_book(self, symbol: str, limit: int = 10) -> OrderBook:
         data = await self._get("/api/v3/depth", {"symbol": symbol, "limit": limit})
         return OrderBook(

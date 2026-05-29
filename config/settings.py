@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     # Binance fetch params
     KLINE_INTERVAL: str = "1h"
     KLINE_LIMIT: int = 100
+    MIN_VOLUME_USD: float = 1_000_000.0  # min 24h volume to include pair in ALL mode
 
     # Technical indicator params
     RSI_PERIOD: int = 14

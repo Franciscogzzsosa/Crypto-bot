@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Optional
 
 from sqlalchemy import Boolean, DateTime, Float, Integer, String, Text, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
@@ -25,20 +26,20 @@ class MarketSnapshot(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     symbol: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
     price: Mapped[float] = mapped_column(Float, nullable=False)
-    volume_24h: Mapped[float | None] = mapped_column(Float)
-    price_change_pct: Mapped[float | None] = mapped_column(Float)
-    best_bid: Mapped[float | None] = mapped_column(Float)
-    best_ask: Mapped[float | None] = mapped_column(Float)
-    spread: Mapped[float | None] = mapped_column(Float)
-    rsi: Mapped[float | None] = mapped_column(Float)
-    macd: Mapped[float | None] = mapped_column(Float)
-    macd_signal: Mapped[float | None] = mapped_column(Float)
-    macd_hist: Mapped[float | None] = mapped_column(Float)
-    ema_fast: Mapped[float | None] = mapped_column(Float)
-    ema_slow: Mapped[float | None] = mapped_column(Float)
-    bb_upper: Mapped[float | None] = mapped_column(Float)
-    bb_mid: Mapped[float | None] = mapped_column(Float)
-    bb_lower: Mapped[float | None] = mapped_column(Float)
+    volume_24h: Mapped[Optional[float]] = mapped_column(Float)
+    price_change_pct: Mapped[Optional[float]] = mapped_column(Float)
+    best_bid: Mapped[Optional[float]] = mapped_column(Float)
+    best_ask: Mapped[Optional[float]] = mapped_column(Float)
+    spread: Mapped[Optional[float]] = mapped_column(Float)
+    rsi: Mapped[Optional[float]] = mapped_column(Float)
+    macd: Mapped[Optional[float]] = mapped_column(Float)
+    macd_signal: Mapped[Optional[float]] = mapped_column(Float)
+    macd_hist: Mapped[Optional[float]] = mapped_column(Float)
+    ema_fast: Mapped[Optional[float]] = mapped_column(Float)
+    ema_slow: Mapped[Optional[float]] = mapped_column(Float)
+    bb_upper: Mapped[Optional[float]] = mapped_column(Float)
+    bb_mid: Mapped[Optional[float]] = mapped_column(Float)
+    bb_lower: Mapped[Optional[float]] = mapped_column(Float)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 
@@ -47,12 +48,12 @@ class Signal(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     symbol: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
-    side: Mapped[str | None] = mapped_column(String(10))
-    reason: Mapped[str | None] = mapped_column(Text)
-    confidence: Mapped[float | None] = mapped_column(Float)
-    current_price: Mapped[float | None] = mapped_column(Float)
+    side: Mapped[Optional[str]] = mapped_column(String(10))
+    reason: Mapped[Optional[str]] = mapped_column(Text)
+    confidence: Mapped[Optional[float]] = mapped_column(Float)
+    current_price: Mapped[Optional[float]] = mapped_column(Float)
     rejected: Mapped[bool] = mapped_column(Boolean, default=False)
-    rejection_reason: Mapped[str | None] = mapped_column(Text)
+    rejection_reason: Mapped[Optional[str]] = mapped_column(Text)
     detected_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 
@@ -63,20 +64,20 @@ class PaperTrade(Base):
     symbol: Mapped[str] = mapped_column(String(20), nullable=False, index=True)
     side: Mapped[str] = mapped_column(String(10), nullable=False)
     entry_price: Mapped[float] = mapped_column(Float, nullable=False)
-    exit_price: Mapped[float | None] = mapped_column(Float)
+    exit_price: Mapped[Optional[float]] = mapped_column(Float)
     size_usd: Mapped[float] = mapped_column(Float, nullable=False)
     shares: Mapped[float] = mapped_column(Float, nullable=False)
     fee_paid: Mapped[float] = mapped_column(Float, nullable=False)
     slippage_cost: Mapped[float] = mapped_column(Float, nullable=False)
     stop_loss_price: Mapped[float] = mapped_column(Float, nullable=False)
     take_profit_price: Mapped[float] = mapped_column(Float, nullable=False)
-    realized_pnl: Mapped[float | None] = mapped_column(Float)
+    realized_pnl: Mapped[Optional[float]] = mapped_column(Float)
     status: Mapped[str] = mapped_column(String(10), default="OPEN")
-    exit_reason: Mapped[str | None] = mapped_column(String(20))
-    signal_id: Mapped[int | None] = mapped_column(Integer)
-    confidence: Mapped[float | None] = mapped_column(Float)
+    exit_reason: Mapped[Optional[str]] = mapped_column(String(20))
+    signal_id: Mapped[Optional[int]] = mapped_column(Integer)
+    confidence: Mapped[Optional[float]] = mapped_column(Float)
     opened_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
-    closed_at: Mapped[datetime | None] = mapped_column(DateTime)
+    closed_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
 
 
 class PortfolioSnapshot(Base):
@@ -100,10 +101,10 @@ class RiskEvent(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     event_type: Mapped[str] = mapped_column(String(50), nullable=False)
-    symbol: Mapped[str | None] = mapped_column(String(20))
-    description: Mapped[str | None] = mapped_column(Text)
-    value: Mapped[float | None] = mapped_column(Float)
-    threshold: Mapped[float | None] = mapped_column(Float)
+    symbol: Mapped[Optional[str]] = mapped_column(String(20))
+    description: Mapped[Optional[str]] = mapped_column(Text)
+    value: Mapped[Optional[float]] = mapped_column(Float)
+    threshold: Mapped[Optional[float]] = mapped_column(Float)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default=func.now())
 
 
@@ -116,7 +117,7 @@ class StrategyRun(Base):
     signals_detected: Mapped[int] = mapped_column(Integer, default=0)
     trades_executed: Mapped[int] = mapped_column(Integer, default=0)
     trades_rejected: Mapped[int] = mapped_column(Integer, default=0)
-    cycle_duration_ms: Mapped[int | None] = mapped_column(Integer)
-    error: Mapped[str | None] = mapped_column(Text)
+    cycle_duration_ms: Mapped[Optional[int]] = mapped_column(Integer)
+    error: Mapped[Optional[str]] = mapped_column(Text)
     started_at: Mapped[datetime] = mapped_column(DateTime, nullable=False)
-    finished_at: Mapped[datetime | None] = mapped_column(DateTime)
+    finished_at: Mapped[Optional[datetime]] = mapped_column(DateTime)

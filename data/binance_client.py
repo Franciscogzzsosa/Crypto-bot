@@ -9,7 +9,7 @@ import httpx
 
 logger = logging.getLogger(__name__)
 
-BASE_URL = "https://api.binance.com"
+BASE_URL = "https://api.binance.us"
 _CIRCUIT_BREAK_THRESHOLD = 3
 _CIRCUIT_BREAK_PAUSE = 60.0
 
